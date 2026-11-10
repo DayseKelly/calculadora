@@ -2,126 +2,193 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>CALCULADORA</title>
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 36px 24px 56px;
+            color: #202a44;
+            background: #f3f6fc;
             font-family: Arial, sans-serif;
-            background: #a8b5ee;
-            padding: 5px;
+            line-height: 1.6;
         }
-        h1{color: white;}
+
+        h1 {
+            margin: 0 0 28px;
+            padding: 26px 30px;
+            border-radius: 18px;
+            color: #fff;
+            background: linear-gradient(120deg, #253f77, #4568ae);
+            box-shadow: 0 12px 28px rgba(37, 63, 119, 0.18);
+            font-size: clamp(1.6rem, 4vw, 2.2rem);
+            letter-spacing: 0.04em;
+        }
+
         h2 {
-            background: #274a7b;
-            color: white;
-            padding: 5px;
+            margin: 28px 0 0;
+            padding: 15px 20px;
+            border-radius: 14px 14px 0 0;
+            color: #fff;
+            background: #304f89;
+            font-size: 1.1rem;
+            line-height: 1.4;
         }
+
         form {
-            margin-bottom: 30px;
-            background: white;
-            padding: 5px;
-            border-radius: 80px;
+            margin: 0;
+            padding: 18px 20px;
+            border-radius: 0 0 14px 14px;
+            background: #fff;
+            box-shadow: 0 8px 24px rgba(37, 54, 91, 0.08);
         }
+
         input[type=number], input[type=text] {
-            padding: 5px;
-            margin: 5px 0;
-            width: 100px;
+            width: min(150px, 100%);
+            min-height: 40px;
+            margin: 5px 8px 5px 4px;
+            padding: 8px 10px;
+            border: 1px solid #cbd4e4;
+            border-radius: 8px;
+            color: #202a44;
+            background: #fbfcff;
+            font: inherit;
         }
+
+        select {
+            min-height: 40px;
+            margin: 5px 8px 5px 4px;
+            padding: 8px 32px 8px 10px;
+            border: 1px solid #cbd4e4;
+            border-radius: 8px;
+            color: #202a44;
+            background: #fbfcff;
+            font: inherit;
+        }
+
+        input:focus, select:focus {
+            border-color: #4568ae;
+            outline: 3px solid rgba(69, 104, 174, 0.18);
+        }
+
         input[type=submit] {
-            padding: 6px 12px;
-            margin-top: 5px;
+            min-height: 40px;
+            margin: 5px 4px;
+            padding: 8px 16px;
+            border: 0;
+            border-radius: 8px;
+            color: #fff;
+            background: #4568ae;
+            font: inherit;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 150ms ease, transform 150ms ease;
+        }
+
+        input[type=submit]:hover {
+            background: #304f89;
+            transform: translateY(-1px);
+        }
+
+        input[type=submit]:focus-visible {
+            outline: 3px solid rgba(69, 104, 174, 0.35);
+            outline-offset: 2px;
+        }
+
+        h2 + p,
+        form + p {
+            min-height: 16px;
+            margin: 0;
+            padding: 0 20px 16px;
+            border-radius: 0 0 14px 14px;
+            color: #304f89;
+            background: #fff;
+            box-shadow: 0 8px 24px rgba(37, 54, 91, 0.08);
+        }
+
+        form + p:empty {
+            display: none;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 20px 14px 36px;
+            }
+
+            h1 {
+                padding: 20px;
+            }
+
+            h2 {
+                margin-top: 20px;
+            }
+
+            form {
+                padding: 14px 16px;
+            }
+
+            input[type=number], input[type=text] {
+                width: min(100%, 220px);
+            }
         }
     </style>
 </head>
 <body>
 
-<h1>ATIVIDADE DE PHP</h1>
+<h1>CALCULADORA</h1>
 
-<!-- MÉDIA ARITMÉTICA -->
 <h2>Média Aritmética</h2>
-<form method="post">
-    Nota 1: <input type="number" name="n1" step="0.1" required>
-    Nota 2: <input type="number" name="n2" step="0.1" required>
-    Nota 3: <input type="number" name="n3" step="0.1" required>
-    Nota 4: <input type="number" name="n4" step="0.1" required>
-    <input type="submit" name="media" value="Calcular">
+<form id="formMedia">
+    Nota 1: <input type="number" name="n1" step="any" required>
+    Nota 2: <input type="number" name="n2" step="any" required>
+    Nota 3: <input type="number" name="n3" step="any" required>
+    Nota 4: <input type="number" name="n4" step="any" required>
+    <input type="submit" value="Calcular">
 </form>
-<?php
-if (isset($_POST['media'])) {
-    $m = ($_POST['n1'] + $_POST['n2'] + $_POST['n3'] + $_POST['n4']) / 4;
-    echo "Média: " . number_format($m, 2);
-}
-?>
+<p id="resultadoMedia" aria-live="polite"></p>
 
-<!-- CELSIUS PARA FAHRENHEIT -->
 <h2>Conversão de Temperatura</h2>
-<form method="post">
-    Celsius: <input type="number" name="celsius" required>
-    <input type="submit" name="temp" value="Converter">
+<form id="formTemperatura">
+    Celsius: <input type="number" name="celsius" step="any" required>
+    <input type="submit" value="Converter">
 </form>
-<?php
-if (isset($_POST['temp'])) {
-    $f = ($_POST['celsius'] * 1.8) + 32;
-    echo "Fahrenheit: " . number_format($f, 2);
-}
-?>
+<p id="resultadoTemperatura" aria-live="polite"></p>
 
-<!-- PAR OU ÍMPAR -->
 <h2>Par ou Ímpar</h2>
-<form method="post">
-    Número: <input type="number" name="num" required>
-    <input type="submit" name="parimpar" value="Verificar">
+<form id="formParImpar">
+    Número: <input type="number" name="num" step="1" required>
+    <input type="submit" value="Verificar">
 </form>
-<?php
-if (isset($_POST['parimpar'])) {
-    echo ($_POST['num'] % 2 == 0) ? "Número Par" : "Número Ímpar";
-}
-?>
+<p id="resultadoParImpar" aria-live="polite"></p>
 
-<!-- MAIORIDADE -->
 <h2>Verificar Maioridade</h2>
-<form method="post">
-    Idade: <input type="number" name="idade" required>
-    <input type="submit" name="maioridade" value="Verificar">
+<form id="formMaioridade">
+    Idade: <input type="number" name="idade" min="0" step="1" required>
+    <input type="submit" value="Verificar">
 </form>
-<?php
-if (isset($_POST['maioridade'])) {
-    $idade = $_POST['idade'];
-    if ($idade >= 18) {
-        echo "Maior de idade.";
-    } else {
-        echo "Menor de idade. Faltam " . (18 - $idade) . " anos.";
-    }
-}
-?>
+<p id="resultadoMaioridade" aria-live="polite"></p>
 
-<!-- VELOCIDADE -->
 <h2>Velocidade do Veículo</h2>
-<form method="post">
-    Velocidade: <input type="number" name="velocidade" required>
-    <input type="submit" name="veloc" value="Verificar">
+<form id="formVelocidade">
+    Velocidade: <input type="number" name="velocidade" min="0" step="any" required>
+    <input type="submit" value="Verificar">
 </form>
-<?php
-if (isset($_POST['veloc'])) {
-    echo ($_POST['velocidade'] > 110) ? "Velocidade excedida!" : "Dentro do limite.";
-}
-?>
+<p id="resultadoVelocidade" aria-live="polite"></p>
 
-<!-- FEBRE -->
 <h2>Verificar Febre</h2>
-<form method="post">
-    Temperatura: <input type="number" name="tempCorpo" step="0.1" required>
-    <input type="submit" name="febre" value="Verificar">
+<form id="formFebre">
+    Temperatura: <input type="number" name="tempCorpo" step="any" required>
+    <input type="submit" value="Verificar">
 </form>
-<?php
-if (isset($_POST['febre'])) {
-    $t = $_POST['tempCorpo'];
-    echo ($t >= 36 && $t <= 36.7) ? "Temperatura normal." : "Possível febre.";
-}
-?>
+<p id="resultadoFebre" aria-live="polite"></p>
 
-<!-- LANCHONETE -->
 <h2>Lanchonete</h2>
-<form method="post">
+<form id="formLanchonete">
     Nome: <input type="text" name="nome" required><br>
     Escolha seu lanche:<br>
     <select name="lanche">
@@ -132,157 +199,217 @@ if (isset($_POST['febre'])) {
         <option value="5">Pizza - R$18</option>
         <option value="6">Refrigerante - R$5</option>
     </select>
-    <input type="submit" name="pedido" value="Pedir">
+    <input type="submit" value="Pedir">
 </form>
-<?php
-if (isset($_POST['pedido'])) {
-    $cardapio = [
-        1 => ['Hambúrguer', 10],
-        2 => ['X-Salada', 12],
-        3 => ['X-Bacon', 14],
-        4 => ['Cachorro Quente', 8],
-        5 => ['Pizza', 18],
-        6 => ['Refrigerante', 5]
-    ];
-    $nome = $_POST['nome'];
-    $opcao = $_POST['lanche'];
-    if (isset($cardapio[$opcao])) {
-        echo "Olá, $nome! Você escolheu " . $cardapio[$opcao][0] . ", que custa R$" . $cardapio[$opcao][1];
-    } else {
-        echo "Opção inválida.";
-    }
-}
-?>
+<p id="resultadoLanchonete" aria-live="polite"></p>
 
-<!-- NÚMEROS DE 1 A 100 -->
 <h2>Números de 1 a 100</h2>
-<?php
-for ($i = 1; $i <= 100; $i++) echo "$i ";
-?>
+<p id="numeros1a100"></p>
 
 <h2>Números Pares de 1 a 100</h2>
-<?php
-for ($i = 2; $i <= 100; $i += 2) echo "$i ";
-?>
+<p id="numerosPares"></p>
 
-<!-- IDADES MÚLTIPLAS -->
 <h2>Idades (menor de 18 e maior de 65)</h2>
-<form method="post">
-    Digite uma idade (0 para sair): <input type="number" name="idadeLoop">
-    <input type="submit" name="idadeLoopBtn" value="Enviar">
+<form id="formIdades">
+    Digite uma idade (0 para sair): <input type="number" name="idadeLoop" min="0" step="1" required>
+    <input type="submit" value="Enviar">
 </form>
-<?php
-session_start();
-if (!isset($_SESSION['menor'])) $_SESSION['menor'] = 0;
-if (!isset($_SESSION['idoso'])) $_SESSION['idoso'] = 0;
+<p id="resultadoIdades" aria-live="polite"></p>
 
-if (isset($_POST['idadeLoopBtn'])) {
-    $idade = $_POST['idadeLoop'];
-    if ($idade < 1) {
-        echo "Finalizado. Menores de 18: " . $_SESSION['menor'] . ", Maiores de 65: " . $_SESSION['idoso'];
-        session_destroy();
-    } else {
-        if ($idade < 18) $_SESSION['menor']++;
-        if ($idade > 65) $_SESSION['idoso']++;
-    }
-}
-?>
-
-<!-- VETOR NÚMEROS -->
 <h2>Vetor - 5 Números</h2>
-<form method="post">
-    <?php for ($i = 1; $i <= 5; $i++) echo "Número $i: <input type='number' name='num[]' required><br>"; ?>
-    <input type="submit" name="vetorNum" value="Mostrar">
+<form id="formVetorNumeros">
+    Número 1: <input type="number" name="numero" step="any" required><br>
+    Número 2: <input type="number" name="numero" step="any" required><br>
+    Número 3: <input type="number" name="numero" step="any" required><br>
+    Número 4: <input type="number" name="numero" step="any" required><br>
+    Número 5: <input type="number" name="numero" step="any" required><br>
+    <input type="submit" value="Mostrar">
 </form>
-<?php
-if (isset($_POST['vetorNum'])) {
-    foreach ($_POST['num'] as $n) echo $n . " ";
-}
-?>
+<p id="resultadoVetorNumeros" aria-live="polite"></p>
 
-<!-- VETOR NOMES -->
 <h2>Vetor - 5 Nomes</h2>
-<form method="post">
-    <?php for ($i = 1; $i <= 5; $i++) echo "Nome $i: <input type='text' name='nome[]' required><br>"; ?>
-    <input type="submit" name="vetorNome" value="Mostrar">
+<form id="formVetorNomes">
+    Nome 1: <input type="text" name="nome" required><br>
+    Nome 2: <input type="text" name="nome" required><br>
+    Nome 3: <input type="text" name="nome" required><br>
+    Nome 4: <input type="text" name="nome" required><br>
+    Nome 5: <input type="text" name="nome" required><br>
+    <input type="submit" value="Mostrar">
 </form>
-<?php
-if (isset($_POST['vetorNome'])) {
-    foreach ($_POST['nome'] as $n) echo $n . "<br>";
-}
-?>
+<p id="resultadoVetorNomes" aria-live="polite"></p>
 
-<!-- FUNÇÕES -->
 <h2>Funções</h2>
-<?php
-function escreva($texto) {
-    echo "<p>$texto</p>";
-}
-function soma($x, $y) {
-    return $x + $y;
-}
-function calculaAreaRetangulo($larg, $alt) {
-    return $larg * $alt;
-}
-escreva("Função escreva()");
-echo "Soma 4 + 6 = " . soma(4, 6);
-echo "<br>Área 5x10 = " . calculaAreaRetangulo(5, 10);
-?>
+<p>Função escreva()</p>
+<p>Soma 4 + 6 = 10</p>
+<p>Área 5x10 = 50</p>
 
-<!-- CALCULADORA IF/ELSE -->
 <h2>Calculadora IF/ELSE</h2>
-<form method="post">
-    Número 1: <input type="number" name="n1calc" required>
-    Número 2: <input type="number" name="n2calc" required>
-    <select name="operacao">
+<form id="calcIfElse">
+    Número 1: <input type="number" name="n1calc" step="any" required>
+    Número 2: <input type="number" name="n2calc" step="any" required>
+    <select name="operacao" aria-label="Operação">
         <option value="soma">Soma</option>
         <option value="sub">Subtração</option>
         <option value="mult">Multiplicação</option>
         <option value="div">Divisão</option>
         <option value="resto">Resto</option>
     </select>
-    <input type="submit" name="calc1" value="Calcular">
+    <input type="submit" value="Calcular">
 </form>
-<?php
-if (isset($_POST['calc1'])) {
-    $a = $_POST['n1calc'];
-    $b = $_POST['n2calc'];
-    $op = $_POST['operacao'];
-    if ($op == "soma") echo $a + $b;
-    else if ($op == "sub") echo $a - $b;
-    else if ($op == "mult") echo $a * $b;
-    else if ($op == "div") echo $b != 0 ? $a / $b : "Divisão por zero!";
-    else if ($op == "resto") echo $b != 0 ? $a % $b : "Divisão por zero!";
-}
-?>
+<p id="calcIfElseResult" aria-live="polite"></p>
 
-<!-- CALCULADORA SWITCH -->
 <h2>Calculadora SWITCH/CASE</h2>
-<form method="post">
-    Número 1: <input type="number" name="n1sw" required>
-    Número 2: <input type="number" name="n2sw" required>
-    <select name="opsw">
+<form id="calcSwitch">
+    Número 1: <input type="number" name="n1sw" step="any" required>
+    Número 2: <input type="number" name="n2sw" step="any" required>
+    <select name="opsw" aria-label="Operação">
         <option value="soma">Soma</option>
         <option value="sub">Subtração</option>
         <option value="mult">Multiplicação</option>
         <option value="div">Divisão</option>
         <option value="resto">Resto</option>
     </select>
-    <input type="submit" name="calc2" value="Calcular">
+    <input type="submit" value="Calcular">
 </form>
-<?php
-if (isset($_POST['calc2'])) {
-    $a = $_POST['n1sw'];
-    $b = $_POST['n2sw'];
-    switch ($_POST['opsw']) {
-        case 'soma': echo $a + $b; break;
-        case 'sub': echo $a - $b; break;
-        case 'mult': echo $a * $b; break;
-        case 'div': echo $b != 0 ? $a / $b : "Divisão por zero!"; break;
-        case 'resto': echo $b != 0 ? $a % $b : "Divisão por zero!"; break;
+<p id="calcSwitchResult" aria-live="polite"></p>
+
+<script>
+    const formatarNumero = (numero) => new Intl.NumberFormat("pt-BR", {
+        maximumFractionDigits: 10
+    }).format(numero);
+
+    document.getElementById("formMedia").addEventListener("submit", (event) => {
+        event.preventDefault();
+        const form = event.currentTarget;
+        const media = ["n1", "n2", "n3", "n4"]
+            .reduce((soma, campo) => soma + Number(form.elements[campo].value), 0) / 4;
+        document.getElementById("resultadoMedia").textContent = "Média: " + formatarNumero(media);
+    });
+
+    document.getElementById("formTemperatura").addEventListener("submit", (event) => {
+        event.preventDefault();
+        const celsius = Number(event.currentTarget.elements.celsius.value);
+        document.getElementById("resultadoTemperatura").textContent =
+            "Fahrenheit: " + formatarNumero(celsius * 1.8 + 32);
+    });
+
+    document.getElementById("formParImpar").addEventListener("submit", (event) => {
+        event.preventDefault();
+        const numero = Number(event.currentTarget.elements.num.value);
+        document.getElementById("resultadoParImpar").textContent =
+            numero % 2 === 0 ? "Número Par" : "Número Ímpar";
+    });
+
+    document.getElementById("formMaioridade").addEventListener("submit", (event) => {
+        event.preventDefault();
+        const idade = Number(event.currentTarget.elements.idade.value);
+        document.getElementById("resultadoMaioridade").textContent = idade >= 18
+            ? "Maior de idade."
+            : "Menor de idade. Faltam " + (18 - idade) + " anos.";
+    });
+
+    document.getElementById("formVelocidade").addEventListener("submit", (event) => {
+        event.preventDefault();
+        const velocidade = Number(event.currentTarget.elements.velocidade.value);
+        document.getElementById("resultadoVelocidade").textContent =
+            velocidade > 110 ? "Velocidade excedida!" : "Dentro do limite.";
+    });
+
+    document.getElementById("formFebre").addEventListener("submit", (event) => {
+        event.preventDefault();
+        const temperatura = Number(event.currentTarget.elements.tempCorpo.value);
+        document.getElementById("resultadoFebre").textContent =
+            temperatura >= 36 && temperatura <= 36.7
+                ? "Temperatura normal."
+                : "Possível febre.";
+    });
+
+    document.getElementById("formLanchonete").addEventListener("submit", (event) => {
+        event.preventDefault();
+        const form = event.currentTarget;
+        const cardapio = {
+            "1": ["Hambúrguer", 10],
+            "2": ["X-Salada", 12],
+            "3": ["X-Bacon", 14],
+            "4": ["Cachorro Quente", 8],
+            "5": ["Pizza", 18],
+            "6": ["Refrigerante", 5]
+        };
+        const [lanche, preco] = cardapio[form.elements.lanche.value];
+        document.getElementById("resultadoLanchonete").textContent =
+            `Olá, ${form.elements.nome.value}! Você escolheu ${lanche}, que custa R$${preco}.`;
+    });
+
+    document.getElementById("numeros1a100").textContent =
+        Array.from({ length: 100 }, (_, indice) => indice + 1).join(" ");
+    document.getElementById("numerosPares").textContent =
+        Array.from({ length: 50 }, (_, indice) => (indice + 1) * 2).join(" ");
+
+    let menoresDeIdade = 0;
+    let maioresDe65 = 0;
+    document.getElementById("formIdades").addEventListener("submit", (event) => {
+        event.preventDefault();
+        const campoIdade = event.currentTarget.elements.idadeLoop;
+        const idade = Number(campoIdade.value);
+        const resultado = document.getElementById("resultadoIdades");
+
+        if (idade === 0) {
+            resultado.textContent =
+                `Finalizado. Menores de 18: ${menoresDeIdade}, Maiores de 65: ${maioresDe65}`;
+            menoresDeIdade = 0;
+            maioresDe65 = 0;
+        } else {
+            if (idade < 18) menoresDeIdade++;
+            if (idade > 65) maioresDe65++;
+            resultado.textContent =
+                `Contagem atual — menores de 18: ${menoresDeIdade}, maiores de 65: ${maioresDe65}. Digite 0 para finalizar.`;
+        }
+        campoIdade.value = "";
+    });
+
+    document.getElementById("formVetorNumeros").addEventListener("submit", (event) => {
+        event.preventDefault();
+        const numeros = Array.from(event.currentTarget.elements.numero, (campo) => campo.value);
+        document.getElementById("resultadoVetorNumeros").textContent = numeros.join(" ");
+    });
+
+    document.getElementById("formVetorNomes").addEventListener("submit", (event) => {
+        event.preventDefault();
+        const nomes = Array.from(event.currentTarget.elements.nome, (campo) => campo.value);
+        document.getElementById("resultadoVetorNomes").textContent = nomes.join(", ");
+    });
+
+    function calcular(formulario, campoA, campoB, campoOperacao, idResultado, usarSwitch) {
+        const form = document.getElementById(formulario);
+        form.addEventListener("submit", (event) => {
+            event.preventDefault();
+            const a = Number(form.elements[campoA].value);
+            const b = Number(form.elements[campoB].value);
+            const operacao = form.elements[campoOperacao].value;
+            let resultado;
+
+            if (usarSwitch) {
+                switch (operacao) {
+                    case "soma": resultado = a + b; break;
+                    case "sub": resultado = a - b; break;
+                    case "mult": resultado = a * b; break;
+                    case "div": resultado = b !== 0 ? a / b : "Divisão por zero!"; break;
+                    case "resto": resultado = b !== 0 ? a % b : "Divisão por zero!"; break;
+                }
+            } else if (operacao === "soma") resultado = a + b;
+            else if (operacao === "sub") resultado = a - b;
+            else if (operacao === "mult") resultado = a * b;
+            else if (operacao === "div") resultado = b !== 0 ? a / b : "Divisão por zero!";
+            else if (operacao === "resto") resultado = b !== 0 ? a % b : "Divisão por zero!";
+
+            document.getElementById(idResultado).textContent =
+                "Resultado: " + (typeof resultado === "number" ? formatarNumero(resultado) : resultado);
+        });
     }
-}
-?>
+
+    calcular("calcIfElse", "n1calc", "n2calc", "operacao", "calcIfElseResult", false);
+    calcular("calcSwitch", "n1sw", "n2sw", "opsw", "calcSwitchResult", true);
+</script>
 
 </body>
 </html>
